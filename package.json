@@ -1,0 +1,13 @@
+{
+    "name": "ep_resize",
+    "version": "0.0.1",
+    "description": "Receive a postMessage when Etherpad Lite pad content size changes.",
+    "author": {
+        "name": "Tiblu"
+    },
+    "repository" : {
+        "type" : "git",
+        "url"  : "https://github.com/tiblu/ep_resize.git"
+    },
+    "readmeFilename": "README.md"
+}
