@@ -6,6 +6,13 @@ An Etherpad Lite plugin that sends a [postMessage](https://developer.mozilla.org
 
 For example when you want to embed the Etherpad Lite in an iframe and want the iframe size to dynamically change so that all the contents would fit.
 
+## Install
+
+Run in your EP installion directory:
+```
+npm install ep_resize
+```
+
 ## Usage example
 
 Assuming you use JQuery you can receive the EP resize event as follows:
