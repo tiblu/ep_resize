@@ -1,6 +1,6 @@
 # ep_resize
 
-An Etherpad Lite plugin that sends a ``postMessage`` (https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) to embedding page when pad size changes.
+An Etherpad Lite plugin that sends a [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage "postMessage documentation in MDN") to embedding page when pad size changes.
 
 ## What is it good for?
 
