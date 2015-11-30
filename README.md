@@ -16,7 +16,7 @@ Assuming you use JQuery you can receive the EP resize event as follows:
         if (msg.name === 'ep_resize') {
             var width = msg.data.width;
             var height = msg.data.height;
-            console.log('ep_resize', 'new width:', width, 'new height:', height');
+            console.log('ep_resize', 'new width:', width, 'new height:', height);
         }
     });
 ```
