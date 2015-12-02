@@ -33,3 +33,8 @@ When making single page webapps, don't forget to remove the message handler when
 ```javascript
     $(window).off('message onmessage');
 ```
+
+
+## Credits
+
+* CitizenOS for funding the development - https://citizenos.com/
