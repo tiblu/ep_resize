@@ -37,4 +37,4 @@ When making single page webapps, don't forget to remove the message handler when
 
 ## Credits
 
-* CitizenOS for funding the development - https://citizenos.com/
+* [CitizenOS](https://citizenos.com) for funding the development 
