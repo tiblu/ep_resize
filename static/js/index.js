@@ -11,7 +11,7 @@ exports.aceEditEvent = function (event, args, callback) {
     var newWidth = elem.outerWidth();
     
     // Get an array of all element heights
-    var elementHeights = $('iframe[name=ace_outer]').children().map(function() {
+    var elementHeights = $('iframe[name=ace_outer]').contents().find('body').children().map(function() {
         if ($(this).is(":visible")) {
             return $(this).position().top + $(this).height() + (editbar.length ? editbar.outerHeight() : 0);
         }
