@@ -2,6 +2,22 @@
 
 var lastHeight;
 var lastWidth;
+var returnchildHeights = function (children) {
+    var maxHeight = 0;
+    if (children.length) {
+        maxHeight = 0;
+        children.each(function (key, child) {
+            if ($(child).is(':visible')) {
+                var childtop = ($(child).offset().top + $(child).outerHeight());
+                if (childtop > maxHeight) {
+                    maxHeight = childtop;
+                }
+            }        
+        });
+    }
+
+    return maxHeight;
+};
 
 exports.aceEditEvent = function (event, args, callback) {
     var editbar = $('#editbar');
@@ -9,20 +25,18 @@ exports.aceEditEvent = function (event, args, callback) {
     var elem = $('iframe[name=ace_outer]').contents().find('iframe[name=ace_inner]');
     var newHeight = elem.outerHeight() + (editbar.length ? editbar.outerHeight() : 0);
     var newWidth = elem.outerWidth();
-    
-    // Get an array of all element heights
-    var elementHeights = $('iframe[name=ace_outer]').contents().find('body').children().map(function() {
-        if ($(this).is(":visible")) {
-            return $(this).offset().top + $(this).outerHeight();
-        }
-    }).get();
 
-    elementHeights.push(newHeight);
-    // Math.max takes a variable number of arguments
-    // `apply` is equivalent to passing each height as an argument
-    var maxHeight = Math.max.apply(null, elementHeights);
-    if (!lastHeight || !lastWidth || lastHeight !== maxHeight || lastWidth !== newWidth) {
-        sendResizeMessage(newWidth, maxHeight);
+    var maxChild = returnchildHeights($('iframe[name=ace_outer]').contents().find('body').children());
+    var maxChildBody = returnchildHeights($('body').children());
+    if (maxChildBody > maxChild) {
+        maxChild = maxChildBody
+    }
+
+    if (maxChild > newHeight) {
+        newHeight = maxChild;
+    }
+    if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
+        sendResizeMessage(newWidth, newHeight);
     }
     
 };
