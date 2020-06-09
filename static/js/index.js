@@ -6,6 +6,7 @@ var returnchildHeights = function (children, offsetTop) {
     offsetTop = offsetTop + 10 || 10; //Some extra padding for possible shadows etc.
 
     var maxHeight = 0;
+
     if (children.length) {
         maxHeight = 0;
         children.each(function (key, child) {
@@ -41,11 +42,11 @@ exports.aceEditEvent = function (event, context, callback) {
     if (maxChild > newHeight) {
         newHeight = maxChild;
     }
-
     if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
-        sendResizeMessage(newWidth, newHeight);
+        if (newHeight - lastHeight !== 10)
+            sendResizeMessage(newWidth, newHeight);
     }
-    
+
 };
 
 exports.goToRevisionEvent = function (hook_name, context, cb) {
@@ -64,7 +65,6 @@ exports.goToRevisionEvent = function (hook_name, context, cb) {
 var sendResizeMessage = function (width, height) {
     lastHeight = height;
     lastWidth = width;
-
 
     window.parent.postMessage({
         name: 'ep_resize',
