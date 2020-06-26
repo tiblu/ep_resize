@@ -51,9 +51,8 @@ exports.aceEditEvent = function (event, context, callback) {
 
 exports.goToRevisionEvent = function (hook_name, context, cb) {
 
-    var editbar = $('#timeslider-top')
-    var elem = $('#padeditor');
-
+    var editbar = $('#editbar')
+    var elem = $('#outerdocbody');
     var newHeight = elem.outerHeight() + (editbar.length ? editbar.outerHeight() : 0);
     var newWidth = elem.outerWidth();
 
