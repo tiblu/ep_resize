@@ -7,18 +7,21 @@ exports.aceEditorCSS = () => ['ep_resize/static/css/styles.css'];
 
 // SRC: http://youmightnotneedjquery.com/
 const matches = (el, selector) => {
-  return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
+  const func = el.matches ||
+      el.matchesSelector ||
+      el.msMatchesSelector ||
+      el.mozMatchesSelector ||
+      el.webkitMatchesSelector ||
+      el.oMatchesSelector;
+
+  func.call(el, selector);
 };
 
 // JQuery implementation of "outerHeight()"
-const outerHeight = (el) => {
-  return Math.max(el.scrollHeight, el.offsetHeight, el.clientHeight);
-};
+const elOuterHeight = (el) => Math.max(el.scrollHeight, el.offsetHeight, el.clientHeight);
 
 // JQuery implementation of "outerWidth()"
-const outerWidth = (el) => {
-  return Math.max(el.scrollWidth, el.offsetWidth, el.clientWidth);
-};
+const elOuterWidth = (el) => Math.max(el.scrollWidth, el.offsetWidth, el.clientWidth);
 
 const returnChildHeights = (children, offsetTop) => {
   offsetTop = offsetTop + 10 || 10; // Some extra padding for possible shadows etc.
@@ -28,11 +31,11 @@ const returnChildHeights = (children, offsetTop) => {
   if (children.length) {
     maxHeight = 0;
 
-    for(let i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       const child = children[i];
       const cid = child.getAttribute('id');
       const isIframe = matches(child, 'iframe');
-      const isVisible =  child.offsetWidth > 0 || child.offsetHeight > 0;
+      const isVisible = child.offsetWidth > 0 || child.offsetHeight > 0;
       const validElem = ['editorcontainerbox', 'editbar'].indexOf(cid) === -1;
       const hasHeight = child.offsetHeight > 0;
 
@@ -70,12 +73,19 @@ exports.aceEditEvent = (event, context) => {
   const aceInnerTop = padInner.getBoundingClientRect().top;
 
   const finalLine = (context.rep.lines.atIndex(context.rep.lines.length() - 1)).lineNode;
-  const finalLineOuterHeight = outerHeight(finalLine);
+  const finalLineOuterHeight = elOuterHeight(finalLine);
 
-  let newHeight = finalLine.getBoundingClientRect().top + finalLineOuterHeight + aceInnerTop + aceOuterTop;
-  const newWidth = outerWidth(padInner);
+  let newHeight = finalLine.getBoundingClientRect().top +
+      finalLineOuterHeight +
+      aceInnerTop +
+      aceOuterTop;
 
-  let maxChild = returnChildHeights(padOuter.contentWindow.document.querySelector('body').children, aceOuterTop); // #outerdocbody
+  const newWidth = elOuterWidth(padInner);
+
+  const maxChild = returnChildHeights(
+      padOuter.contentWindow.document.querySelector('body').children,
+      aceOuterTop
+  ); // #outerdocbody
   const maxChildBody = returnChildHeights(document.querySelector('body').children);
 
   if (maxChildBody > maxChild) {
@@ -83,7 +93,7 @@ exports.aceEditEvent = (event, context) => {
   }
 
   if (maxChild > newHeight) {
-     newHeight = maxChild;
+    newHeight = maxChild;
   }
 
   if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
@@ -94,8 +104,8 @@ exports.aceEditEvent = (event, context) => {
 exports.goToRevisionEvent = (hook, context) => {
   const editbar = document.getElementById('editbar');
   const elem = document.getElementById('outerdocbody');
-  const newHeight = outerHeight(elem) + (editbar ? outerHeight(editbar) : 0);
-  const newWidth = outerWidth(elem);
+  const newHeight = elOuterHeight(elem) + (editbar ? elOuterHeight(editbar) : 0);
+  const newWidth = elOuterWidth(elem);
 
   if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
     sendResizeMessage(newWidth, newHeight);
