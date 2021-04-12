@@ -2,27 +2,48 @@
 
 let lastHeight;
 let lastWidth;
-const returnchildHeights = (children, offsetTop) => {
+
+exports.aceEditorCSS = () => ['ep_resize/static/css/styles.css'];
+
+// SRC: http://youmightnotneedjquery.com/
+const matches = (el, selector) => {
+  return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
+};
+
+// JQuery implementation of "outerHeight()"
+const outerHeight = (el) => {
+  return Math.max(el.scrollHeight, el.offsetHeight, el.clientHeight);
+};
+
+// JQuery implementation of "outerWidth()"
+const outerWidth = (el) => {
+  return Math.max(el.scrollWidth, el.offsetWidth, el.clientWidth);
+};
+
+const returnChildHeights = (children, offsetTop) => {
   offsetTop = offsetTop + 10 || 10; // Some extra padding for possible shadows etc.
 
   let maxHeight = 0;
 
   if (children.length) {
     maxHeight = 0;
-    children.each((key, child) => {
-      const cid = $(child).attr('id');
-      const isIframe = $(child).is('iframe');
-      const isVisible = $(child).is(':visible');
+
+    for(let i = 0; i < children.length; i++) {
+      const child = children[i];
+      const cid = child.getAttribute('id');
+      const isIframe = matches(child, 'iframe');
+      const isVisible =  child.offsetWidth > 0 || child.offsetHeight > 0;
       const validElem = ['editorcontainerbox', 'editbar'].indexOf(cid) === -1;
-      const hasHeight = $(child)[0].offsetHeight > 0;
+      const hasHeight = child.offsetHeight > 0;
+
       // Avoid infinit increasing
       if (isVisible && validElem && !isIframe && hasHeight) {
-        const childtop = ($(child).offset().top + $(child)[0].offsetHeight) + offsetTop;
+        const childtop = (child.getBoundingClientRect().top + child.offsetHeight) + offsetTop;
         if (childtop > maxHeight) {
           maxHeight = childtop;
         }
       }
-    });
+    }
   }
 
   return maxHeight;
@@ -41,43 +62,42 @@ const sendResizeMessage = (width, height) => {
   }, '*');
 };
 
-exports.aceEditEvent = (event, context, cb) => {
-  const padOuter = $('iframe[name=ace_outer]');
-  const ace_outer_top = padOuter.offset().top;
-  const ace_inner_top = padOuter.contents().find('iframe[name=ace_inner]').offset().top;
-  const getFinalLine = context.rep.lines.atIndex(context.rep.lines.length() - 1);
-  const finalLine = $(getFinalLine.lineNode);
+exports.aceEditEvent = (event, context) => {
+  const padOuter = document.querySelector('iframe[name="ace_outer"]');
+  const padInner = padOuter.contentWindow.document.querySelector('iframe[name="ace_inner"]');
 
-  const elem = $('iframe[name=ace_outer]').contents().find('iframe[name=ace_inner]');
-  let newHeight = finalLine.offset().top + finalLine.outerHeight() + ace_outer_top + ace_inner_top;
-  const newWidth = elem.outerWidth();
+  const aceOuterTop = padOuter.getBoundingClientRect().top;
+  const aceInnerTop = padInner.getBoundingClientRect().top;
 
-  let maxChild = returnchildHeights(padOuter.contents().find('body').children(), ace_outer_top);
-  const maxChildBody = returnchildHeights($('body').children());
+  const finalLine = (context.rep.lines.atIndex(context.rep.lines.length() - 1)).lineNode;
+  const finalLineOuterHeight = outerHeight(finalLine);
+
+  let newHeight = finalLine.getBoundingClientRect().top + finalLineOuterHeight + aceInnerTop + aceOuterTop;
+  const newWidth = outerWidth(padInner);
+
+  let maxChild = returnChildHeights(padOuter.contentWindow.document.querySelector('body').children, aceOuterTop); // #outerdocbody
+  const maxChildBody = returnChildHeights(document.querySelector('body').children);
 
   if (maxChildBody > maxChild) {
-    maxChild = maxChildBody;
+    newHeight = maxChildBody;
   }
 
   if (maxChild > newHeight) {
-    newHeight = maxChild;
+     newHeight = maxChild;
   }
+
   if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
     if (newHeight - lastHeight !== 10) sendResizeMessage(newWidth, newHeight);
   }
-
-  return cb();
 };
 
-exports.goToRevisionEvent = (hook, context, cb) => {
-  const editbar = $('#editbar');
-  const elem = $('#outerdocbody');
-  const newHeight = elem.outerHeight() + (editbar.length ? editbar.outerHeight() : 0);
-  const newWidth = elem.outerWidth();
+exports.goToRevisionEvent = (hook, context) => {
+  const editbar = document.getElementById('editbar');
+  const elem = document.getElementById('outerdocbody');
+  const newHeight = outerHeight(elem) + (editbar ? outerHeight(editbar) : 0);
+  const newWidth = outerWidth(elem);
 
   if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
     sendResizeMessage(newWidth, newHeight);
   }
-
-  return cb();
 };
