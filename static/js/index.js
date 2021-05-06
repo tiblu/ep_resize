@@ -68,6 +68,8 @@ const sendResizeMessage = (width, height) => {
 exports.aceEditEvent = (event, context) => {
   const padOuter = document.querySelector('iframe[name="ace_outer"]');
   const padInner = padOuter.contentWindow.document.querySelector('iframe[name="ace_inner"]');
+  const popups = document.getElementsByClassName('popup-show');
+  const menu_right = document.getElementsByClassName('menu_right');
 
   const aceOuterTop = padOuter.getBoundingClientRect().top;
   const aceInnerTop = padInner.getBoundingClientRect().top;
@@ -87,6 +89,7 @@ exports.aceEditEvent = (event, context) => {
       aceOuterTop
   ); // #outerdocbody
   const maxChildBody = returnChildHeights(document.querySelector('body').children);
+  const maxPopups = returnChildHeights(popups) + menu_right[0].offsetHeight;
 
   if (maxChildBody > maxChild) {
     newHeight = maxChildBody;
@@ -94,6 +97,10 @@ exports.aceEditEvent = (event, context) => {
 
   if (maxChild > newHeight) {
     newHeight = maxChild;
+  }
+
+  if (maxPopups > newHeight) {
+    newHeight = maxPopups;
   }
 
   if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
