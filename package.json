@@ -1,6 +1,6 @@
 {
   "name": "ep_resize",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Receive a postMessage when Etherpad Lite pad content size changes.",
   "author": {
     "name": "tiblu"
