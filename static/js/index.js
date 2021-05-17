@@ -69,8 +69,8 @@ exports.aceEditEvent = (event, context) => {
   const padOuter = document.querySelector('iframe[name="ace_outer"]');
   const padInner = padOuter.contentWindow.document.querySelector('iframe[name="ace_inner"]');
   const popups = document.getElementsByClassName('popup-show');
-  const menu_right = document.getElementsByClassName('menu_right')[0];
-  const menu_left = document.getElementsByClassName('menu_left')[0];
+  const menuRight = document.getElementsByClassName('menuRight')[0];
+  const menuLeft = document.getElementsByClassName('menuLeft')[0];
 
   const aceOuterTop = padOuter.getBoundingClientRect().top;
   const aceInnerTop = padInner.getBoundingClientRect().top;
@@ -79,10 +79,12 @@ exports.aceEditEvent = (event, context) => {
   const finalLineOuterHeight = elOuterHeight(finalLine);
   let menuBottomOffset = 0;
 
-  if (menu_left.getBoundingClientRect().top !== menu_right.getBoundingClientRect().top) {
-    menuBottomOffset =  menu_right.offsetHeight;
+  if (menuLeft.getBoundingClientRect().top !== menuRight.getBoundingClientRect().top) {
+    menuBottomOffset = menuRight.offsetHeight;
   }
-  let newHeight = finalLine.getBoundingClientRect().top + finalLineOuterHeight + menuBottomOffset + 10;
+  let newHeight = finalLine.getBoundingClientRect().top;
+  newHeight += finalLineOuterHeight;
+  newHeight += menuBottomOffset + 10;
   if (aceInnerTop > 0) {
     newHeight += aceInnerTop;
   }
@@ -111,7 +113,9 @@ exports.aceEditEvent = (event, context) => {
   }
 
   if (!lastHeight || !lastWidth || lastHeight !== newHeight || lastWidth !== newWidth) {
-    if (newHeight - lastHeight !== 20 && newHeight - lastHeight !== -5)  sendResizeMessage(newWidth, newHeight);
+    if (newHeight - lastHeight !== 20 && newHeight - lastHeight !== -5) {
+      sendResizeMessage(newWidth, newHeight);
+    }
   }
 };
 
