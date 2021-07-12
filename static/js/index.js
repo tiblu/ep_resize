@@ -69,8 +69,8 @@ exports.aceEditEvent = (event, context) => {
   const padOuter = document.querySelector('iframe[name="ace_outer"]');
   const padInner = padOuter.contentWindow.document.querySelector('iframe[name="ace_inner"]');
   const popups = document.getElementsByClassName('popup-show');
-  const menuRight = document.getElementsByClassName('menuRight')[0];
-  const menuLeft = document.getElementsByClassName('menuLeft')[0];
+  const menuRight = document.getElementsByClassName('menu_right')[0];
+  const menuLeft = document.getElementsByClassName('menu_left')[0];
 
   const aceOuterTop = padOuter.getBoundingClientRect().top;
   const aceInnerTop = padInner.getBoundingClientRect().top;
