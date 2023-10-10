@@ -74,7 +74,6 @@ exports.aceEditEvent = (event, context) => {
 
   const aceOuterTop = padOuter.getBoundingClientRect().top;
   const aceInnerTop = padInner.getBoundingClientRect().top;
-
   const finalLine = (context.rep.lines.atIndex(context.rep.lines.length() - 1)).lineNode;
   const finalLineOuterHeight = elOuterHeight(finalLine);
   let menuBottomOffset = 0;
@@ -97,12 +96,11 @@ exports.aceEditEvent = (event, context) => {
       padOuter.contentWindow.document.querySelector('body').children,
       aceOuterTop
   ); // #outerdocbody
-  const maxChildBody = returnChildHeights(document.querySelector('body').children);
+  /*const maxChildBody = returnChildHeights(document.querySelector('body').children);*/
   const maxPopups = returnChildHeights(popups) + menuBottomOffset;
-
-  if (maxChildBody > maxChild) {
+ /* if (maxChildBody > maxChild) {
     newHeight = maxChildBody;
-  }
+  }*/
 
   if (maxChild > newHeight) {
     newHeight = maxChild;
